@@ -30,6 +30,12 @@ app.post('/messages', (req, res) => {
     message.save((err)=>{
         if(err) { sendStatus(500)}
 
+        Message.findOne({message: 'badword'}, (err, censored)=>{
+            if(censored){
+                console.log('censored words found', censored)
+                Message.remove({_id: censored.id})
+            }
+        })
         io.emit('message', req.body)
         res.sendStatus(200)
     })
